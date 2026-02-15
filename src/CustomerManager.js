@@ -2046,6 +2046,18 @@ const CustomerDetail = ({ customer, demoTypes, onClose, onEdit, onDelete, onTogg
     setDemoDate('');
   };
 
+  // Delete purchase (for Cancel Order button)
+  const deletePurchase = (purchaseId) => {
+    if (!window.confirm('Cancel this order? This will permanently delete it from the purchase history.')) return;
+
+    const updatedCustomer = {
+      ...customer,
+      purchases: (customer.purchases || []).filter(p => p.id !== purchaseId)
+    };
+
+    onUpdate(updatedCustomer);
+  };
+
   // Count completed demos
   const completedDemos = customer.demos 
     ? Object.values(customer.demos).filter(d => d.completed).length 
@@ -2388,115 +2400,6 @@ const CustomerDetail = ({ customer, demoTypes, onClose, onEdit, onDelete, onTogg
             ) : (
               <p className="empty-state">No purchases recorded yet. Click "+ Add Order" above to track sales.</p>
             )}
-          </div>
-        )}
-
-        {/* PURCHASE FORM */}
-        {showPurchaseForm && (
-          <div className="detail-section purchase-form-section">
-            <div className="section-header">
-              <h3>{editingPurchase ? '✏️ Edit Purchase' : '+ Add Purchase'}</h3>
-              <button className="btn-close" onClick={cancelPurchaseForm}>×</button>
-            </div>
-
-            <div className="form-grid">
-              <div className="form-group">
-                <label>Date *</label>
-                <input
-                  type="date"
-                  value={purchaseForm.date}
-                  onChange={(e) => handlePurchaseFormChange('date', e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Product *</label>
-                <select
-                  value={purchaseForm.product}
-                  onChange={(e) => handlePurchaseFormChange('product', e.target.value)}
-                >
-                  <option value="">Select Product</option>
-                  {productList.map(product => (
-                    <option key={product} value={product}>{product}</option>
-                  ))}
-                </select>
-              </div>
-
-              {purchaseForm.product === 'Custom' && (
-                <div className="form-group form-group-full">
-                  <label>Custom Product Name *</label>
-                  <input
-                    type="text"
-                    value={purchaseForm.customProduct}
-                    onChange={(e) => handlePurchaseFormChange('customProduct', e.target.value)}
-                    placeholder="Enter product name"
-                  />
-                </div>
-              )}
-
-              <div className="form-group">
-                <label>Quantity *</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={purchaseForm.quantity}
-                  onChange={(e) => handlePurchaseFormChange('quantity', e.target.value)}
-                  placeholder="0"
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Unit Price *</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={purchaseForm.unitPrice}
-                  onChange={(e) => handlePurchaseFormChange('unitPrice', e.target.value)}
-                  placeholder="0.00"
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Total</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={purchaseForm.total}
-                  onChange={(e) => handlePurchaseFormChange('total', e.target.value)}
-                  placeholder="Auto-calculated"
-                />
-              </div>
-
-              <div className="form-group form-group-full">
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={purchaseForm.cwo}
-                    onChange={(e) => handlePurchaseFormChange('cwo', e.target.checked)}
-                  />
-                  <span>Check With Order (CWO) - 10% commission bonus</span>
-                </label>
-              </div>
-
-              <div className="form-group form-group-full">
-                <label>Notes</label>
-                <textarea
-                  value={purchaseForm.notes}
-                  onChange={(e) => handlePurchaseFormChange('notes', e.target.value)}
-                  placeholder="Optional notes about this purchase..."
-                  rows="3"
-                />
-              </div>
-            </div>
-
-            <div className="form-actions">
-              <button className="btn btn-secondary" onClick={cancelPurchaseForm}>
-                Cancel
-              </button>
-              <button className="btn btn-primary" onClick={addPurchase}>
-                {editingPurchase ? 'Update Purchase' : 'Save Purchase'}
-              </button>
-            </div>
           </div>
         )}
 
