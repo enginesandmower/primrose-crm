@@ -5,7 +5,6 @@ const RoutePlanner = ({ customers, onBack }) => {
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [routeMode, setRouteMode] = useState('out-and-back'); // or 'round-trip'
   const [homeAddress, setHomeAddress] = useState('Canton, SD'); // User's home base
-  const [targetReturnTime, setTargetReturnTime] = useState('17:00');
   const [route, setRoute] = useState(null);
   const [loading, setLoading] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -319,6 +318,7 @@ const RoutePlanner = ({ customers, onBack }) => {
         center: { lat: 43.5, lng: -96.5 } // Roughly South Dakota area
       });
 
+      // eslint-disable-next-line no-unused-vars
       const directionsRenderer = new window.google.maps.DirectionsRenderer({
         map: map,
         directions: route.directions
