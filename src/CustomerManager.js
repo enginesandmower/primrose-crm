@@ -436,23 +436,6 @@ const CustomerManager = () => {
     setActiveFilter(null);
   };
 
-  const deletePurchase = (purchaseId) => {
-    if (!window.confirm('Delete this purchase?')) return;
-
-    const updatedCustomers = customers.map(c => {
-      if (c.id === selectedCustomer.id) {
-        return {
-          ...c,
-          purchases: (c.purchases || []).filter(p => p.id !== purchaseId)
-        };
-      }
-      return c;
-    });
-
-    setCustomers(updatedCustomers);
-    setSelectedCustomer(updatedCustomers.find(c => c.id === selectedCustomer.id));
-  };
-
   // Export customers to JSON file
   const handleExportCustomers = () => {
     const dataStr = JSON.stringify(customers, null, 2);
@@ -1491,8 +1474,6 @@ const CustomerDetail = ({ customer, demoTypes, onClose, onEdit, onDelete, onTogg
   const [noteText, setNoteText] = useState('');
   const [selectedContact, setSelectedContact] = useState(customer.contacts[0]?.name || '');
   const [filterContact, setFilterContact] = useState('All');
-  const [showPurchaseForm, setShowPurchaseForm] = useState(false);
-  const [editingPurchase, setEditingPurchase] = useState(null);
   const [editingNote, setEditingNote] = useState(null);
   
   // Task completion states
@@ -1594,66 +1575,6 @@ const CustomerDetail = ({ customer, demoTypes, onClose, onEdit, onDelete, onTogg
       startVoiceRecording();
     }
   };
-
-  // Product list for purchases
-  const productList = [
-    // Fuel Additives - 5000 Series
-    '5007 Power Klenz ID',
-    '5055 Rescue Rx',
-    '5437 Winter Klenz ID',
-    '5757 Winter Klenz ID',
-    // Popular Products
-    'Phaser',
-    '480M',
-    'Seal Saver',
-    '2035 Thermal Advantage',
-    // Additional Fuel Additives
-    '532T',
-    'B66R',
-    '203M',
-    '205R',
-    '208M',
-    '210M',
-    '210V',
-    '211M',
-    '212A',
-    '212M',
-    '213R',
-    '217M',
-    '252R',
-    '327C',
-    '400P',
-    '510M',
-    '512M',
-    '513M',
-    '514M',
-    '514S',
-    '548A',
-    'B620',
-    'B660',
-    'B680',
-    '714M',
-    '747S',
-    'MP8',
-    // Lubricants
-    'Grease',
-    'Engine Oil',
-    'Hydraulic Fluid',
-    'Gear Oil',
-    // Other
-    'Custom'
-  ];
-
-  const [purchaseForm, setPurchaseForm] = useState({
-    date: new Date().toISOString().split('T')[0],
-    product: '',
-    customProduct: '',
-    quantity: '',
-    unitPrice: '',
-    total: '',
-    cwo: false,
-    notes: ''
-  });
 
   const handleAddNote = () => {
     if (!noteText.trim()) return;
