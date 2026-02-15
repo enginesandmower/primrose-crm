@@ -1576,6 +1576,50 @@ const CustomerDetail = ({ customer, demoTypes, onClose, onEdit, onDelete, onTogg
     }
   };
 
+  // Product list for Quick Order
+  const productList = [
+    '5007 Power Klenz ID',
+    '5055 Rescue Rx',
+    '5437 Winter Klenz ID',
+    '5757 Winter Klenz ID',
+    'Phaser',
+    '480M',
+    'Seal Saver',
+    '2035 Thermal Advantage',
+    '532T',
+    'B66R',
+    '203M',
+    '205R',
+    '208M',
+    '210M',
+    '210V',
+    '211M',
+    '212A',
+    '212M',
+    '213R',
+    '217M',
+    '252R',
+    '327C',
+    '400P',
+    '510M',
+    '512M',
+    '513M',
+    '514M',
+    '514S',
+    '548A',
+    'B620',
+    'B660',
+    'B680',
+    '714M',
+    '747S',
+    'MP8',
+    'Grease',
+    'Engine Oil',
+    'Hydraulic Fluid',
+    'Gear Oil',
+    'Custom'
+  ];
+
   const handleAddNote = () => {
     if (!noteText.trim()) return;
     
@@ -2224,9 +2268,8 @@ const CustomerDetail = ({ customer, demoTypes, onClose, onEdit, onDelete, onTogg
         )}
 
         {/* PURCHASE HISTORY SECTION */}
-        {!showPurchaseForm && (
-          <div className="detail-section">
-            <h3>💰 Purchase History</h3>
+        <div className="detail-section">
+          <h3>💰 Purchase History</h3>
 
             {customer.purchases && customer.purchases.length > 0 ? (
               <>
@@ -2322,7 +2365,6 @@ const CustomerDetail = ({ customer, demoTypes, onClose, onEdit, onDelete, onTogg
               <p className="empty-state">No purchases recorded yet. Click "+ Add Order" above to track sales.</p>
             )}
           </div>
-        )}
 
         <div className="detail-section">
           <h3>Contacts ({customer.contacts.length})</h3>
