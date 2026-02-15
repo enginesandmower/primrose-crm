@@ -30,67 +30,6 @@ const CustomerManager = () => {
   const [showRoutePlanner, setShowRoutePlanner] = useState(false);
   const [activeFilter, setActiveFilter] = useState(null); // For clickable stats
 
-  // Product list for purchases
-  const productList = [
-    // Fuel Additives - 5000 Series
-    '5007 Power Klenz ID',
-    '5055 Rescue Rx',
-    '5437 Winter Klenz ID',
-    '5757 Winter Klenz ID',
-    // Popular Products
-    'Phaser',
-    '480M',
-    'Seal Saver',
-    '2035 Thermal Advantage',
-    // Additional Fuel Additives
-    '532T',
-    'B66R',
-    '203M',
-    '205R',
-    '208M',
-    '210M',
-    '210V',
-    '211M',
-    '212A',
-    '212M',
-    '213R',
-    '217M',
-    '252R',
-    '327C',
-    '400P',
-    '510M',
-    '512M',
-    '513M',
-    '514M',
-    '514S',
-    '548A',
-    'B620',
-    'B660',
-    'B680',
-    '714M',
-    '747S',
-    'MP8',
-    // Lubricants
-    'Grease',
-    'Engine Oil',
-    'Hydraulic Fluid',
-    'Gear Oil',
-    // Other
-    'Custom'
-  ];
-
-
-  const [purchaseForm, setPurchaseForm] = useState({
-    date: new Date().toISOString().split('T')[0],
-    product: '',
-    customProduct: '',
-    quantity: '',
-    unitPrice: '',
-    total: '',
-    cwo: false,
-    notes: ''
-  });
-
   // Save customers to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('primrose-customers', JSON.stringify(customers));
@@ -1193,7 +1132,6 @@ const CustomerForm = ({ customer, leadStages, states, demoTypes, onSave, onCance
 
   // Business card scanning state
   const [isScanning, setIsScanning] = useState(false);
-  const [scanError, setScanError] = useState(null);
 
   // Phone number formatting function
   const formatPhoneNumber = (value) => {
@@ -1213,7 +1151,6 @@ const CustomerForm = ({ customer, leadStages, states, demoTypes, onSave, onCance
   // Business Card Scanner Function
   const scanBusinessCard = async (imageFile) => {
     setIsScanning(true);
-    setScanError(null);
 
     try {
       // Convert image to base64
@@ -1273,7 +1210,6 @@ const CustomerForm = ({ customer, leadStages, states, demoTypes, onSave, onCance
 
     } catch (error) {
       console.error('Business card scan error:', error);
-      setScanError(error.message);
       alert(`❌ Scan failed: ${error.message}`);
     } finally {
       setIsScanning(false);
@@ -2108,105 +2044,6 @@ const CustomerDetail = ({ customer, demoTypes, onClose, onEdit, onDelete, onTogg
     setShowDemoDialog(false);
     setSelectedDemo(null);
     setDemoDate('');
-  };
-
-  // Purchase form handlers
-  const handlePurchaseFormChange = (field, value) => {
-    const updated = { ...purchaseForm, [field]: value };
-    
-    // Auto-calculate total if quantity or unitPrice changes
-    if (field === 'quantity' || field === 'unitPrice') {
-      const qty = parseFloat(field === 'quantity' ? value : updated.quantity) || 0;
-      const price = parseFloat(field === 'unitPrice' ? value : updated.unitPrice) || 0;
-      updated.total = (qty * price).toFixed(2);
-    }
-    
-    setPurchaseForm(updated);
-  };
-
-  const addPurchase = () => {
-    if (!purchaseForm.product || !purchaseForm.quantity || !purchaseForm.unitPrice) {
-      alert('Please fill in Product, Quantity, and Unit Price');
-      return;
-    }
-
-    const purchase = {
-      id: Date.now().toString(),
-      date: purchaseForm.date,
-      product: purchaseForm.product === 'Custom' ? purchaseForm.customProduct : purchaseForm.product,
-      quantity: parseFloat(purchaseForm.quantity),
-      unitPrice: parseFloat(purchaseForm.unitPrice),
-      total: parseFloat(purchaseForm.total),
-      cwo: purchaseForm.cwo,
-      notes: purchaseForm.notes
-    };
-
-    const purchases = customer.purchases || [];
-    const updatedPurchases = editingPurchase 
-      ? purchases.map(p => p.id === editingPurchase.id ? purchase : p)
-      : [...purchases, purchase];
-
-    const updatedCustomer = {
-      ...customer,
-      purchases: updatedPurchases
-    };
-
-    onUpdate(updatedCustomer);
-    
-    // Reset form
-    setPurchaseForm({
-      date: new Date().toISOString().split('T')[0],
-      product: '',
-      customProduct: '',
-      quantity: '',
-      unitPrice: '',
-      total: '',
-      cwo: false,
-      notes: ''
-    });
-    setShowPurchaseForm(false);
-    setEditingPurchase(null);
-  };
-
-  const editPurchase = (purchase) => {
-    setEditingPurchase(purchase);
-    setPurchaseForm({
-      date: purchase.date,
-      product: productList.includes(purchase.product) ? purchase.product : 'Custom',
-      customProduct: productList.includes(purchase.product) ? '' : purchase.product,
-      quantity: purchase.quantity.toString(),
-      unitPrice: purchase.unitPrice.toString(),
-      total: purchase.total.toString(),
-      cwo: purchase.cwo,
-      notes: purchase.notes || ''
-    });
-    setShowPurchaseForm(true);
-  };
-
-  const deletePurchase = (purchaseId) => {
-    if (!window.confirm('Cancel this order? This will permanently delete it from the purchase history.')) return;
-
-    const updatedCustomer = {
-      ...customer,
-      purchases: (customer.purchases || []).filter(p => p.id !== purchaseId)
-    };
-
-    onUpdate(updatedCustomer);
-  };
-
-  const cancelPurchaseForm = () => {
-    setShowPurchaseForm(false);
-    setEditingPurchase(null);
-    setPurchaseForm({
-      date: new Date().toISOString().split('T')[0],
-      product: '',
-      customProduct: '',
-      quantity: '',
-      unitPrice: '',
-      total: '',
-      cwo: false,
-      notes: ''
-    });
   };
 
   // Count completed demos
